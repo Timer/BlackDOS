@@ -69,6 +69,7 @@ void main() {
 }
 
 void printString(char *c) {
+  /* print char until end of string is reached */
   while (*c != '\0') {
     char p = *c;
     interrupt(16, 14 * 256 + p, 0, 0, 0);
@@ -80,17 +81,21 @@ void printString(char *c) {
 void readString(char *c) {
   int count = 0;
   while (1) {
+    /* read a string, printing it back as we get it */
     char *newChar = interrupt(22, 0, 0, 0, 0);
     if (newChar == 13) {
+      /* enter hit */
       c[count] = '\0';
       printString("\r\n\0");
       break;
     } else if (newChar == 8) {
+      /* handle backspace */
       if (count > 0) {
         --count;
         interrupt(16, 14 * 256 + 8, 0, 0, 0);
       }
     } else {
+      /* new char */
       c[count++] = newChar;
       interrupt(16, 14 * 256 + newChar, 0, 0, 0);
     }
@@ -101,9 +106,11 @@ void readString(char *c) {
 void clearScreen(int bx, int cx) {
   int i = 0;
   while (i < 24) {
+    /* tons of new lines =D */
     printString("\r\n\0");
     ++i;
   }
+  /* make screen pretty */
   interrupt(16, 512, 0, 0, 0);
   if (bx < 1 || cx < 1)
     return;
@@ -125,6 +132,7 @@ int div(int a, int b) {
   return (q - 1);
 }
 
+/* provided */
 void writeInt(int x) {
   char number[6], *d;
   int q = x, r;
@@ -155,50 +163,58 @@ void readInt(int *number) {
   char line[6];
   readString(line);
   while (line[i] != '\0') {
+    /* read an int, subtracting off the char value for 0 for a numerical */
     temp = temp * 10 + line[i++] - '0';
   }
   *number = temp;
 }
 
 void readSector(char *data, int absSectorNo) {
+  /* compute position with provided math */
   int relSecNo = mod(absSectorNo, 18) + 1;
   int headNo = mod(div(absSectorNo, 18), 2);
   int trackNo = div(absSectorNo, 36);
+  /* iterrupt for it */
   interrupt(19, 2 * 256 + 1, data, trackNo * 256 + relSecNo, headNo * 256 + 0);
 }
 
-int matchFile(char *indexed, char *fileName) {
+int matchFile(char *file1, char *file2) {
   int i;
+  /* file names can be 6 long */
   for (i = 0; i < 6; ++i) {
-    if (indexed[i] != fileName[i])
+    if (file1[i] != file2[i])
       return 0;
-    if (indexed[i] == 0)
+    if (file1[i] == 0)
       return 1;
   }
   return 1;
 }
 
 void readFile(char *fileName, char *buffer, int *size) {
-  char directory[512], foundFile[7];
+  char directory[512], aFile[7];
   int i, j, k, l, fileStart, fileEnd, shouldError, fileSize;
 
   readSector(directory, 2);
 
   shouldError = 1;
+  /* loop through all files in dir */
   for (i = 0; i < 16; i++) {
     fileStart = i * 32;
     fileEnd = fileStart + 6;
 
     k = 0;
     for (j = fileStart; j < fileEnd; j++) {
-      foundFile[k++] = directory[j];
+      aFile[k++] = directory[j];
     }
-    foundFile[6] = '\0';
+    aFile[6] = '\0';
 
-    if (!matchFile(foundFile, fileName)) {
+    /* check if it's what we want */
+    if (!matchFile(aFile, fileName)) {
+      /* it's not */
       continue;
     }
 
+    /* we want this! read it */
     shouldError = 0;
     fileSize = 0;
     for (l = fileEnd; directory[l] != 0x0; l++) {
@@ -206,10 +222,12 @@ void readFile(char *fileName, char *buffer, int *size) {
       buffer = buffer + 512;
       fileSize = fileSize + 1;
     }
+    /* send back size */
     *size = fileSize;
     break;
   }
 
+  /* file not found */
   if (shouldError) {
     error(0);
   }
@@ -219,14 +237,17 @@ void runProgram(char *fileName, int segment) {
   char buffer[13312];
   int i;
 
+  /* access file */
   readFile(fileName, buffer);
   segment = segment * 0x1000;
+  /* load max size into mem */
   for (i = 0; i < 13312; i++) {
     putInMemory(segment, i, buffer[i]);
   }
   launchProgram(segment);
 }
 
+/* provided */
 void error(int bx) {
   char errMsg0[18], errMsg1[17], errMsg2[13], errMsg3[17];
 
