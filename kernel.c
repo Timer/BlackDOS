@@ -180,10 +180,11 @@ int matchFile(char *indexed, char *fileName) {
 
 void readFile(char *fileName, char *buffer, int *size) {
   char directory[512], foundFile[7];
-  int i, j, k, l, fileStart, fileEnd, found, fileSize;
+  int i, j, k, l, fileStart, fileEnd, shouldError, fileSize;
 
   readSector(directory, 2);
 
+  shouldError = 1;
   for (i = 0; i < 16; i++) {
     fileStart = i * 32;
     fileEnd = fileStart + 6;
@@ -195,22 +196,23 @@ void readFile(char *fileName, char *buffer, int *size) {
     }
     foundFile[6] = '\0';
 
-    if (matchFile(foundFile, fileName)) {
-      found = 1;
-
-      fileSize = 0;
-      for (l = fileEnd; directory[l] != 0x0; l++) {
-        readSector(buffer, directory[l]);
-        buffer = buffer + 512;
-        fileSize = fileSize + 1;
-      }
-      *size = fileSize;
+    if (!matchFile(foundFile, fileName)) {
+      continue;
     }
+
+    shouldError = 0;
+    fileSize = 0;
+    for (l = fileEnd; directory[l] != 0x0; l++) {
+      readSector(buffer, directory[l]);
+      buffer = buffer + 512;
+      fileSize = fileSize + 1;
+    }
+    *size = fileSize;
+    break;
   }
 
-  if (!found) {
+  if (shouldError) {
     error(0);
-    return;
   }
 }
 
