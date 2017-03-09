@@ -1,3 +1,6 @@
 *.o
 *.log
 *.*~
+bochsout.txt
+floppya.img
+kernel
