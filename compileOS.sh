@@ -23,11 +23,6 @@ dd if=kernel of=floppya.img bs=512 conv=notrunc seek=3
 # Compile load file
 gcc -o loadFile loadFile.c
 
-# Compile fib
-bcc -ansi -c -o fib.o fib.c
-as86 lib.asm -o lib_asm.o
-ld86 -o fib -d fib.o lib_asm.o
-
 # Compile cal
 bcc -ansi -c -o cal.o cal.c
 as86 lib.asm -o lib_asm.o
@@ -38,4 +33,3 @@ ld86 -o cal -d cal.o lib_asm.o
 ./loadFile test1
 ./loadFile test2
 ./loadFile cal
-./loadFile fib
