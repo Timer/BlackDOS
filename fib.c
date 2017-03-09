@@ -6,6 +6,7 @@ void main() {
   SCANN(n);
   if (n < 3)
     n = 3;
+  PRINTS("\r\n\0");
   PRINTN(n);
   PRINTS(" terms: \0");
   PRINTN(a);
