@@ -12,6 +12,7 @@ void main()
       PRINTS("Enter desired month: \0");
       SCANN(mo);
    }
+   PRINTS("\r\n\0");
    PRINTS("Enter desired year: \0");
    SCANN(yr);
    if (yr < 100) yr += 2000;
