@@ -168,10 +168,12 @@ void readSector(char *data, int absSectorNo) {
 }
 
 int stringCompare(char *indexed, char *fileName) {
-  int i, match = 0;
+  int i;
   for (i = 0; i < 6; ++i) {
     if (indexed[i] != fileName[i])
       return 0;
+    if (indexed[i] == 0)
+      return 1;
   }
   return 1;
 }
