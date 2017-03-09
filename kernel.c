@@ -191,8 +191,7 @@ void readFile(char *fileName, char *buffer, int *size) {
 
     k = 0;
     for (j = fileStart; j < fileEnd; j++) {
-      foundFile[k] = directory[j];
-      k++;
+      foundFile[k++] = directory[j];
     }
     foundFile[6] = '\0';
 
