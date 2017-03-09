@@ -62,7 +62,7 @@ void main() {
 
   interrupt(33, 3, "msg\0", buffer, &size);
   interrupt(33, 0, buffer, 0, 0);
-  interrupt(33, 4, "fib\0", 2, 0);
+  interrupt(33, 4, "cal\0", 2, 0);
   interrupt(33, 0, "Error if this executes\r\n\0", 0, 0);
   while (1)
     ;
