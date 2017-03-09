@@ -167,7 +167,7 @@ void readSector(char *data, int absSectorNo) {
   interrupt(19, 2 * 256 + 1, data, trackNo * 256 + relSecNo, headNo * 256 + 0);
 }
 
-int stringCompare(char *indexed, char *fileName) {
+int matchFile(char *indexed, char *fileName) {
   int i;
   for (i = 0; i < 6; ++i) {
     if (indexed[i] != fileName[i])
@@ -179,9 +179,8 @@ int stringCompare(char *indexed, char *fileName) {
 }
 
 void readFile(char *fileName, char *buffer, int *size) {
-  char directory[512];
-  char foundFile[7];
-  int i, j, k, l, fileStart, fileEnd, found;
+  char directory[512], foundFile[7];
+  int i, j, k, l, fileStart, fileEnd, found, fileSize;
 
   readSector(directory, 2);
 
@@ -196,14 +195,16 @@ void readFile(char *fileName, char *buffer, int *size) {
     }
     foundFile[6] = '\0';
 
-    if (stringCompare(foundFile, fileName)) {
+    if (matchFile(foundFile, fileName)) {
       found = 1;
 
+      fileSize = 0;
       for (l = fileEnd; directory[l] != 0x0; l++) {
         readSector(buffer, directory[l]);
         buffer = buffer + 512;
-        *size = *size + 1;
+        fileSize = fileSize + 1;
       }
+      *size = fileSize;
     }
   }
 
