@@ -1,14 +1,9 @@
-BlackDOS Project 1
+BlackDOS Project 2
 ------------------
 
 The program was implemented per instructions.
 
-You can follow the prompts to ensure it works as required.
-You may enter a string up to 79 characters; backspace works.
-
-You may enter a number up to 5 digits.
-
-Anything outside of these bounds is undefined behavior.
+Run the program and see the contents from `msg`, along with the cal program running.
 
 Caleb Kupetz
 Emily Trenka
