@@ -169,17 +169,11 @@ void readSector(char *data, int absSectorNo) {
 
 int stringCompare(char *indexed, char *fileName) {
   int i, match = 0;
-  for (i = 0; i < 6; i++) {
-    if (indexed[i] == 0x0 || indexed[i] == '\r' || indexed[i] == '\n')
-      break;
-    if (indexed[i] == fileName[i])
-      match = 1;
-    else {
-      match = 0;
-      break;
-    }
+  for (i = 0; i < 6; ++i) {
+    if (indexed[i] != fileName[i])
+      return 0;
   }
-  return match;
+  return 1;
 }
 
 void readFile(char *fileName, char *buffer, int *size) {
