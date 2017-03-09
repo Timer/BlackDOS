@@ -169,9 +169,7 @@ void readSector(char *data, int absSectorNo) {
 
 int stringCompare(char *indexed, char *fileName) {
   int i, match = 0;
-  /* check first 6 chars (loadFile max name length) */
   for (i = 0; i < 6; i++) {
-    /* ignore special chars*/
     if (indexed[i] == 0x0 || indexed[i] == '\r' || indexed[i] == '\n')
       break;
     if (indexed[i] == fileName[i])
@@ -184,16 +182,13 @@ int stringCompare(char *indexed, char *fileName) {
   return match;
 }
 
-/* To read a file at a given sector and load it to a buffer */
 void readFile(char *fileName, char *buffer, int *size) {
   char directory[512];
   char foundFile[7];
   int i, j, k, l, fileStart, fileEnd, found;
 
-  /* read in the directory sector*/
   readSector(directory, 2);
 
-  /* loop through the directory */
   for (i = 0; i < 16; i++) {
     fileStart = i * 32;
     fileEnd = fileStart + 6;
@@ -205,11 +200,9 @@ void readFile(char *fileName, char *buffer, int *size) {
     }
     foundFile[6] = '\0';
 
-    /* check if the file matches the given file name */
     if (stringCompare(foundFile, fileName)) {
       found = 1;
 
-      /* get the sectors */
       for (l = fileEnd; directory[l] != 0x0; l++) {
         readSector(buffer, directory[l]);
         buffer = buffer + 512;
@@ -228,12 +221,9 @@ void runProgram(char *fileName, int segment) {
   char buffer[13312];
   int i;
 
-  /* load the file into a buffer */
   readFile(fileName, buffer);
-  /* multiple to derive the base location of the indicated segment */
   segment = segment * 0x1000;
   for (i = 0; i < 13312; i++) {
-    /* transfer the file from the buffer to memory */
     putInMemory(segment, i, buffer[i]);
   }
   launchProgram(segment);
