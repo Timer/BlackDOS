@@ -117,3 +117,42 @@ char *trimFront(char *s) {
   }
   return s;
 }
+
+/* c+p from kernel.c */
+int matchFile(char *file1, char *file2) {
+  int i;
+  /* file names can be 6 long */
+  for (i = 0; i < 6; ++i) {
+    if (file1[i] != file2[i])
+      return 0;
+    if (file1[i] == 0)
+      return 1;
+  }
+  return 1;
+}
+
+void copyFile(char *file1, char *file2) {
+  char buffer[13312];
+  char directory[512];
+  int i, j, k;
+  int fileStart, fileEnd, sectors = 0;
+  char fn[6];
+
+  interrupt(33, 2, directory, 2, 0);
+  for (i = 0; i < 16; i++) {
+    fileStart = i * 32;
+    fileEnd = fileStart + 6;
+    for (j = 0; j < 6; j++) {
+      fn[j] = directory[fileStart + j];
+    }
+    if (!matchFile(fn, file1)) {
+      continue;
+    }
+    for (k = fileEnd; directory[k] != 0; k++) {
+      sectors++;
+    }
+    break;
+  }
+  interrupt(33, 3, file1, buffer);
+  interrupt(33, 8, file2, buffer, sectors);
+}
