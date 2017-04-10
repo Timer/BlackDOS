@@ -200,6 +200,7 @@ void print_folder() {
   char directory[512];
   char file[10];
   int i, k, j, fileStart, fileEnd;
+  int fileCount = 0;
 
   interrupt(33, 2, directory, 2, 0, 0);
   /* max 16 files */
@@ -212,20 +213,27 @@ void print_folder() {
       file[j] = ' ';
     }
     for (; fileStart < fileEnd; ++fileStart) {
+      /* stop at null */
       if (directory[fileStart] == 0) {
         break;
       }
       file[k] = directory[fileStart];
       k++;
     }
+    /* empty record, skip */
     if (k == 0) {
       continue;
     }
+    ++fileCount;
+    /* add new line, like ls */
     file[k] = '\r';
     file[k + 1] = '\n';
     file[k + 2] = '\0';
+    /* skip internal files */
     if (!isUpper(file)) {
       PRINTS(file);
     }
   }
+
+  PRINTS(" " + fileCount + "/16 files; \r\n\0");
 }
