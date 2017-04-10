@@ -1,9 +1,22 @@
-BlackDOS Project 2
+BlackDOS Project 3
 ------------------
 
 The program was implemented per instructions.
 
-Run the program and see the contents from `msg`, along with the cal program running.
+Testing:
+
+1. `boot` should re-boot shell
+2. `cls` should clear the screen
+3. `copy file1 file2` should copy a file; use `dir` to verify
+4. `del file` should delete a file; use `dir` to verify
+5. `dir` already tested
+6. `echo text` should echo front-trimmed text
+7. `help` shows this manual
+8. `run program` runs a program, try `kitty`, `fib`, or `cal`.
+9. `tweet file` prompts for a tweet to store in `file`.
+10. `type file` reads the file contents and shows them on screen, try `type msg`.
+11. Hitting enter with no command does nothing but a new line.
+12. Unknown commands should suggest you use `help`.
 
 Caleb Kupetz
 Emily Trenka

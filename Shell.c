@@ -52,7 +52,17 @@ void main() {
       PRINTS(trimFront(command + 4));
       PRINTS("\r\n\0");
     } else if (str_begins(command, "help")) {
-      // TODO: help
+      PRINTS("1. `boot` should re-boot shell\r\n\0");
+      PRINTS("2. `cls` should clear the screen\r\n\0");
+      PRINTS("3. `copy file1 file2` should copy a file; use `dir` to verify\r\n\0");
+      PRINTS("4. `del file` should delete a file; use `dir` to verify\r\n\0");
+      PRINTS("5. `dir` already tested\r\n\0");
+      PRINTS("6. `echo text` should echo front-trimmed text\r\n\0");
+      PRINTS("7. `help` shows this manual\r\n\0");
+      PRINTS("8. `run program` runs a program, try `kitty`, `fib`, or `cal`.\r\n\0");
+      PRINTS("9. `tweet file` prompts for a tweet to store in `file`.\r\n\0");
+      PRINTS("10. `type file` reads the file contents and shows them on screen, try `type msg`.\r\n\0");
+      PRINTS("11. Hitting enter with no command does nothing but a new line.\r\n\0");
     } else if (str_begins(command, "run")) {
       interrupt(33, 4, trimFront(command + 3), 4, 0);
     } else if (str_begins(command, "tweet")) {
