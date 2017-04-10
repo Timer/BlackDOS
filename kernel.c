@@ -60,10 +60,8 @@ void main() {
             " Author(s): Caleb Kupetz, Emily Trenka, Joe Haddad.\r\n\r\n\0", 0,
             0);
 
-  interrupt(33, 3, "msg\0", buffer, &size);
-  interrupt(33, 0, buffer, 0, 0);
-  interrupt(33, 4, "cal\0", 2, 0);
-  interrupt(33, 0, "Error if this executes\r\n\0", 0, 0);
+  interrupt(33, 4, "Shell\0", 2, 0);
+  interrupt(33, 0, "Bad or missing command interpreter.\r\n\0", 0, 0);
   while (1)
     ;
 }
@@ -332,10 +330,7 @@ void error(int bx) {
   }
 }
 
-void stop() {
-  while (1)
-    ;
-}
+void stop() { launchProgram(8192); }
 
 void writeSector(char *data, int absSectorNo) {
   /* compute position with provided math */
