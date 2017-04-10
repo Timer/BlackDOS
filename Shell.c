@@ -202,20 +202,23 @@ void print_folder() {
   int i, k, j, fileStart, fileEnd;
 
   interrupt(33, 2, directory, 2, 0, 0);
+  /* max 16 files */
   for (i = 0; i < 16; i++) {
+    k = 0;
     fileStart = i * 32;
     fileEnd = fileStart + 6;
-    k = 0;
     file[0] = '\0';
     for (j = 1; j < 7; j++) {
       file[j] = ' ';
     }
-    for (fileStart; fileStart < fileEnd; fileStart++) {
-      if (directory[fileStart] != 0) {
-        file[k] = directory[fileStart];
-        file[k + 1] = '\0';
-      }
+    for (; fileStart < fileEnd; ++fileStart) {
+      if (directory[fileStart] == 0)
+        continue;
+      file[k] = directory[fileStart];
       k++;
+    }
+    if (file[k] == '\0') {
+      --k;
     }
     file[k] = '\r';
     file[k + 1] = '\n';
