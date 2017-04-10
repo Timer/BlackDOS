@@ -89,7 +89,9 @@ void main() {
       tweet[140] = '\0';
       interrupt(33, 8, file, tweet, 1);
       PRINTS("\r\n\0");
+      buffer[0] = '\0';
     } else if (str_begins(command, "type")) {
+      buffer[0] = '\0';
       interrupt(33, 3, trimFront(command + 4), buffer, 0);
       PRINTS(buffer);
       PRINTS("\r\n\0");
@@ -192,6 +194,7 @@ void do_copy(char *file1, char *file2) {
     }
     break;
   }
+  buffer[0] = '\0';
   interrupt(33, 3, file1, buffer, 0);
   interrupt(33, 8, file2, buffer, sectors);
 }
