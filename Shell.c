@@ -235,5 +235,18 @@ void print_folder() {
     }
   }
 
-  PRINTS(" " + fileCount + "/16 files; \r\n\0");
+  PRINTS(" \0");
+  if (fileCount >= 10) {
+    char str[3];
+    str[0] = '1';
+    str[1] = '0' + (fileCount - 10);
+    str[2] = '\0';
+    PRINTS(str);
+  } else {
+    char str2[2];
+    str2[0] = '0' + fileCount;
+    str2[1] = '\0';
+    PRINTS(str2);
+  }
+  PRINTS("/16 files; \r\n\0");
 }
