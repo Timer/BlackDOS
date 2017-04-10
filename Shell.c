@@ -11,6 +11,7 @@ void do_copy(char *, char *);
 void main() {
   char command[255];
   char buffer[13312];
+  char tweet[141];
   int i;
   while (1) {
     PRINTS("blackdos ~(__^> \0");
@@ -77,6 +78,7 @@ void main() {
       }
       PRINTS("Enter your tweet (140 chars max): ");
       SCANS(tweet);
+      tweet[140] = '\0';
       interrupt(33, 8, file, tweet, 1);
       PRINTS("\r\n\0");
     } else if (str_begins(command, "type")) {
