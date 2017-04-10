@@ -2,6 +2,7 @@
 
 int str_length(char *);
 int str_begins(char *, char *);
+char *trimFront(char *);
 
 void main() {
   char command[255];
@@ -24,6 +25,9 @@ void main() {
     } else if (str_begins(command, "del")) {
     } else if (str_begins(command, "dir")) {
     } else if (str_begins(command, "echo")) {
+      /* skip echo + space */
+      PRINTS(trimFront(command + 4));
+      PRINTS("\r\n\0");
     } else if (str_begins(command, "help")) {
     } else if (str_begins(command, "run")) {
     } else if (str_begins(command, "tweet")) {
@@ -54,4 +58,11 @@ int str_begins(char *str1, char *str2) {
       return 0;
   }
   return 1;
+}
+
+char *trimFront(char *s) {
+  while (*s == ' ') {
+    ++s;
+  }
+  return s;
 }
