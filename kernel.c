@@ -217,7 +217,7 @@ void readFile(char *fileName, char *buffer, int *size) {
     /* we want this! read it */
     shouldError = 0;
     fileSize = 0;
-    for (l = fileEnd; directory[l] != 0x0; l++) {
+    for (l = fileEnd; directory[l] != 0; l++) {
       readSector(buffer, directory[l]);
       buffer = buffer + 512;
       fileSize = fileSize + 1;
@@ -371,10 +371,10 @@ void deleteFile(char *name) {
     }
 
     shouldError = 0;
-    directory[fileStart] = 0x0;
-    for (l = fileEnd; directory[l] != 0x0; l++) {
+    directory[fileStart] = 0;
+    for (l = fileEnd; directory[l] != 0; l++) {
       index = directory[l];
-      map[index + 1] = 0x00;
+      map[index + 1] = 0;
     }
     break;
   }
@@ -440,14 +440,14 @@ void writeFile(char *name, char *buffer, int numberOfSectors) {
       return;
     }
 
-    if (directory[fileStart] != 0x00) {
+    if (directory[fileStart] != 0) {
       continue;
     }
     for (j = 0; j < nameLength + 1; j++) {
       int k;
       directory[fileStart + j] = name[j];
       for (k = nameLength; k < 7; k++) {
-        directory[fileStart + k] = 0x00;
+        directory[fileStart + k] = 0;
       }
     }
 
@@ -456,16 +456,16 @@ void writeFile(char *name, char *buffer, int numberOfSectors) {
     for (l = 0; l < 512 && parts < numberOfSectors; l++) {
       int n;
       /* check for free sector */
-      if (map[l] == 0xFF) {
+      if (map[l] == 255) {
         continue;
       }
-      if (map[l] == 0xFF && parts == 511) {
+      if (map[l] == 255 && parts == 511) {
         error(2);
         return;
       }
 
       n = 0;
-      map[l] = 0xFF;
+      map[l] = 255;
       /* Write 512 bytes from the buffer holding the file to that sector */
       for (m = parts * 512; m < 512 + (parts * 512); m++) {
         content[n] = buffer[m];
