@@ -350,15 +350,14 @@ void deleteFile(char *name) {
   char map[512];
   char directory[512];
   char aFile[7];
+  int shouldError, i;
 
   readSector(map, 1);
   readSector(directory, 2);
-
-  int shouldError = 1;
-  int i;
+  shouldError = 1;
   for (i = 0; i < 16; i++) {
     int fileStart = i * 32, fileEnd = fileStart + 6, k = 0;
-    int j;
+    int j, l, index;
     for (j = fileStart; j < fileEnd; j++) {
       aFile[k] = directory[j];
       k++;
@@ -366,14 +365,13 @@ void deleteFile(char *name) {
     aFile[6] = '\0';
 
     /* check if it's what we want */
-    if (!matchFile(aFile, fileName)) {
+    if (!matchFile(aFile, name)) {
       /* it's not */
       continue;
     }
 
     shouldError = 0;
     directory[fileStart] = 0x0;
-    int l;
     for (l = fileEnd; directory[l] != 0x0; l++) {
       index = directory[l];
       map[index + 1] = 0x00;
@@ -401,8 +399,9 @@ int str_length(char *c) {
 int exists(char *name) {
   char directory[512];
   char currentFile[7];
-  readSector(directory, 2);
   int i;
+
+  readSector(directory, 2);
   for (i = 0; i < 16; i++) {
     int fileStart = i * 32, fileEnd = fileStart + 6, k = 0;
     int j;
@@ -412,7 +411,7 @@ int exists(char *name) {
     }
     currentFile[6] = '\0';
 
-    if (matchFile(currentFile, fileName)) {
+    if (matchFile(currentFile, name)) {
       return 1;
     }
   }
@@ -423,16 +422,18 @@ void writeFile(char *name, char *buffer, int numberOfSectors) {
   char map[512];
   char directory[512];
   char content[512];
+  int i;
+  int parts = 0;
 
-  int nameLength = getLength(name);
-  int bufferLength = getLength(buffer);
+  int nameLength = str_length(name);
+  int bufferLength = str_length(buffer);
 
   readSector(map, 1);
   readSector(directory, 2);
 
-  int i;
   for (i = 0; i < 16; i++) {
     int fileStart = i * 32, fileEnd = fileStart + 6;
+    int j, l, p, m;
 
     if (exists(name)) {
       error(1);
@@ -442,24 +443,23 @@ void writeFile(char *name, char *buffer, int numberOfSectors) {
     if (directory[fileStart] != 0x00) {
       continue;
     }
-    int j;
-    for (j = 0; j < namelength + 1; j++) {
-      directory[fileStart + j] = fileName[j];
+    for (j = 0; j < nameLength + 1; j++) {
       int k;
-      for (k = namelength; k < 7; k++) {
+      directory[fileStart + j] = name[j];
+      for (k = nameLength; k < 7; k++) {
         directory[fileStart + k] = 0x00;
       }
     }
 
     p = fileEnd;
     /* serach the diskmap */
-    int l;
-    for (l = 0; l < 512 && sectorsAssigned < numOfSectors; l++) {
+    for (l = 0; l < 512 && parts < numberOfSectors; l++) {
+      int n;
       /* check for free sector */
       if (map[l] == 0xFF) {
         continue;
       }
-      if (map[l] == 0xFF && sectorsAssigned == 511) {
+      if (map[l] == 0xFF && parts == 511) {
         error(2);
         return;
       }
@@ -467,12 +467,11 @@ void writeFile(char *name, char *buffer, int numberOfSectors) {
       n = 0;
       map[l] = 0xFF;
       /* Write 512 bytes from the buffer holding the file to that sector */
-      int m;
-      for (m = sectorsAssigned * 512; m < 512 + (sectorsAssigned * 512); m++) {
+      for (m = parts * 512; m < 512 + (parts * 512); m++) {
         content[n] = buffer[m];
         n++;
       }
-      sectorsAssigned++;
+      parts++;
       writeSector(content, l);
       m = 0;
       directory[p] = l;
