@@ -28,8 +28,13 @@ bcc -ansi -c -o cal.o cal.c
 as86 lib.asm -o lib_asm.o
 ld86 -o cal -d cal.o lib_asm.o
 
+# Compile shell
+bcc -ansi -c -o Shell.o Shell.c
+ld86 -o Shell -d Shell.o lib_asm.o
+
 # Load Files
 ./loadFile msg
 ./loadFile test1
 ./loadFile test2
 ./loadFile cal
+./loadFile Shell
