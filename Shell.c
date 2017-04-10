@@ -212,13 +212,11 @@ void print_folder() {
       file[j] = ' ';
     }
     for (; fileStart < fileEnd; ++fileStart) {
-      if (directory[fileStart] == 0)
-        continue;
+      if (directory[fileStart] == 0) {
+        break;
+      }
       file[k] = directory[fileStart];
       k++;
-    }
-    if (file[k] == '\0') {
-      --k;
     }
     file[k] = '\r';
     file[k + 1] = '\n';
