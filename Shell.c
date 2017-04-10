@@ -26,6 +26,13 @@ void main() {
       }
       interrupt(33, 12, 0, 0, 0);
     } else if (str_begins(command, "copy")) {
+      char file1[7], file2[7];
+      char *trimmed;
+      trimmed = trimFront(command + 4);
+      to_filename(trimmed, file1);
+      to_filename(trimFront(str_term_next(trimmed)), file2);
+      PRINTS(file1);
+      PRINTS(file2);
       // TODO: copy
     } else if (str_begins(command, "del")) {
       // TODO: del
