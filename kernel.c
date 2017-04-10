@@ -337,6 +337,153 @@ void stop() {
     ;
 }
 
+void writeSector(char *data, int absSectorNo) {
+  /* compute position with provided math */
+  int relSecNo = mod(absSectorNo, 18) + 1;
+  int headNo = mod(div(absSectorNo, 18), 2);
+  int trackNo = div(absSectorNo, 36);
+  /* iterrupt for it */
+  interrupt(19, 3 * 256 + 1, data, trackNo * 256 + relSecNo, headNo * 256 + 0);
+}
+
+void deleteFile(char *name) {
+  char map[512];
+  char directory[512];
+  char aFile[7];
+
+  readSector(map, 1);
+  readSector(directory, 2);
+
+  int shouldError = 1;
+  int i;
+  for (i = 0; i < 16; i++) {
+    int fileStart = i * 32, fileEnd = fileStart + 6, k = 0;
+    int j;
+    for (j = fileStart; j < fileEnd; j++) {
+      aFile[k] = directory[j];
+      k++;
+    } // make sure we're null terminated (safety)
+    aFile[6] = '\0';
+
+    /* check if it's what we want */
+    if (!matchFile(aFile, fileName)) {
+      /* it's not */
+      continue;
+    }
+
+    shouldError = 0;
+    directory[fileStart] = 0x0;
+    int l;
+    for (l = fileEnd; directory[l] != 0x0; l++) {
+      index = directory[l];
+      map[index + 1] = 0x00;
+    }
+    break;
+  }
+
+  if (shouldError) {
+    error(0);
+    return;
+  }
+  writeSector(map, 1);
+  writeSector(directory, 2);
+}
+
+int str_length(char *c) {
+  int count = 0;
+  while (*c != '\0') {
+    ++count;
+    ++c;
+  }
+  return count;
+}
+
+int exists(char *name) {
+  char directory[512];
+  char currentFile[7];
+  readSector(directory, 2);
+  int i;
+  for (i = 0; i < 16; i++) {
+    int fileStart = i * 32, fileEnd = fileStart + 6, k = 0;
+    int j;
+    for (j = fileStart; j < fileEnd; j++) {
+      currentFile[k] = directory[j];
+      k++;
+    }
+    currentFile[6] = '\0';
+
+    if (matchFile(currentFile, fileName)) {
+      return 1;
+    }
+  }
+  return 0;
+}
+
+void writeFile(char *name, char *buffer, int numberOfSectors) {
+  char map[512];
+  char directory[512];
+  char content[512];
+
+  int nameLength = getLength(name);
+  int bufferLength = getLength(buffer);
+
+  readSector(map, 1);
+  readSector(directory, 2);
+
+  int i;
+  for (i = 0; i < 16; i++) {
+    int fileStart = i * 32, fileEnd = fileStart + 6;
+
+    if (exists(name)) {
+      error(1);
+      return;
+    }
+
+    if (directory[fileStart] != 0x00) {
+      continue;
+    }
+    int j;
+    for (j = 0; j < namelength + 1; j++) {
+      directory[fileStart + j] = fileName[j];
+      int k;
+      for (k = namelength; k < 7; k++) {
+        directory[fileStart + k] = 0x00;
+      }
+    }
+
+    p = fileEnd;
+    /* serach the diskmap */
+    int l;
+    for (l = 0; l < 512 && sectorsAssigned < numOfSectors; l++) {
+      /* check for free sector */
+      if (map[l] == 0xFF) {
+        continue;
+      }
+      if (map[l] == 0xFF && sectorsAssigned == 511) {
+        error(2);
+        return;
+      }
+
+      n = 0;
+      map[l] = 0xFF;
+      /* Write 512 bytes from the buffer holding the file to that sector */
+      int m;
+      for (m = sectorsAssigned * 512; m < 512 + (sectorsAssigned * 512); m++) {
+        content[n] = buffer[m];
+        n++;
+      }
+      sectorsAssigned++;
+      writeSector(content, l);
+      m = 0;
+      directory[p] = l;
+      p++;
+    }
+    break;
+  }
+  writeSector(directory, 2);
+  writeSector(map, 1);
+}
+
 void handleInterrupt21(int ax, int bx, int cx, int dx) {
   if (ax == 0)
     printString(bx);
@@ -350,6 +497,14 @@ void handleInterrupt21(int ax, int bx, int cx, int dx) {
     runProgram(bx, cx);
   else if (ax == 5)
     stop();
+  else if (ax == 6)
+    writeSector(bx, cx);
+  else if (ax == 7)
+    deleteFile(bx);
+  else if (ax == 8)
+    writeFile(bx, cx, dx);
+  else if (ax == 11)
+    interrupt(25, 0, 0, 0, 0);
   else if (ax == 12)
     clearScreen(bx, cx);
   else if (ax == 13)
