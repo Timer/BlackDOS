@@ -7,6 +7,7 @@ int str_length(char *);
 int str_begins(char *, char *);
 char *trimFront(char *);
 void do_copy(char *, char *);
+void print_folder();
 
 void main() {
   char command[255];
@@ -52,7 +53,7 @@ void main() {
       }
       interrupt(33, 7, file, 0, 0);
     } else if (str_begins(command, "dir")) {
-      // TODO: dir
+      print_folder();
     } else if (str_begins(command, "echo")) {
       /* skip echo + space */
       PRINTS(trimFront(command + 4));
@@ -193,4 +194,34 @@ void do_copy(char *file1, char *file2) {
   }
   interrupt(33, 3, file1, buffer);
   interrupt(33, 8, file2, buffer, sectors);
+}
+
+void print_folder() {
+  char directory[512];
+  char file[10];
+  int i, k, j, fileStart, fileEnd;
+
+  interrupt(33, 2, directory, 2, 0, 0);
+  for (i = 0; i < 16; i++) {
+    fileStart = i * 32;
+    fileEnd = fileStart + 6;
+    k = 0;
+    file[0] = '\0';
+    for (j = 1; j < 7; j++) {
+      file[j] = ' ';
+    }
+    for (fileStart; fileStart < fileEnd; fileStart++) {
+      if (directory[fileStart] != 0) {
+        file[k] = directory[fileStart];
+        file[k + 1] = '\0';
+      }
+      k++;
+    }
+    file[k] = '\r';
+    file[k + 1] = '\n';
+    file[k + 2] = '\0';
+    if (!isUpper(file)) {
+      PRINTS(file);
+    }
+  }
 }
