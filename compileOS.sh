@@ -32,9 +32,17 @@ ld86 -o cal -d cal.o lib_asm.o
 bcc -ansi -c -o Shell.o Shell.c
 ld86 -o Shell -d Shell.o lib_asm.o
 
+# Compile other programs
+bcc -ansi -c -o fib.o fib.c
+ld86 -o fib -d fib.o lib_asm.o
+bcc -ansi -c -o kitty.o kitty.c
+ld86 -o kitty -d kitty.o lib_asm.o
+
 # Load Files
 ./loadFile msg
 ./loadFile test1
 ./loadFile test2
 ./loadFile cal
+./loadFile fib
+./loadFile kitty
 ./loadFile Shell
