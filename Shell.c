@@ -218,6 +218,9 @@ void print_folder() {
       file[k] = directory[fileStart];
       k++;
     }
+    if (k == 0) {
+      continue;
+    }
     file[k] = '\r';
     file[k + 1] = '\n';
     file[k + 2] = '\0';
