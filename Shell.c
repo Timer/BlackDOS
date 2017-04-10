@@ -81,11 +81,8 @@ void to_filename(char *src, char *dst) {
 
 char *str_term_next(char *str) {
   str = trimFront(str);
-  while (str != ' ') {
+  while (str != ' ' && str != '\0') {
     ++str;
-    if (*str == '\0') {
-      return "\0";
-    }
   }
   return str;
 }
