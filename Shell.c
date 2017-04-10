@@ -1,7 +1,6 @@
 #include "blackdos.h"
 
 int str_length(char *);
-
 int str_begins(char *, char *);
 
 void main() {
@@ -24,6 +23,8 @@ void main() {
       PRINTS("Unknown command. Type `help` for help.\r\n\0");
     }
   }
+
+  END;
 }
 
 int str_length(char *c) {
