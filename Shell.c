@@ -8,6 +8,7 @@ void main() {
   while (1) {
     PRINTS("blackdos ~(__^> \0");
     SCANS(command);
+    PRINTS("\r\n\0");
 
     if (str_begins(command, "boot")) {
     } else if (str_begins(command, "cls")) {
