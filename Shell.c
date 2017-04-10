@@ -5,6 +5,7 @@ int str_begins(char *, char *);
 
 void main() {
   char command[255];
+  int i;
   while (1) {
     PRINTS("blackdos ~(__^> \0");
     SCANS(command);
@@ -13,7 +14,12 @@ void main() {
       continue;
     }
     if (str_begins(command, "boot")) {
+      interrupt(33, 11, 0, 0, 0);
     } else if (str_begins(command, "cls")) {
+      for (i = 1; i <= 25; i++) {
+        PRINTS("\r\n\0");
+      }
+      interrupt(33, 12, 0, 0, 0);
     } else if (str_begins(command, "copy")) {
     } else if (str_begins(command, "del")) {
     } else if (str_begins(command, "dir")) {
