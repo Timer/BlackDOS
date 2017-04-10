@@ -235,7 +235,8 @@ void print_folder() {
     }
   }
 
-  PRINTS(" \0");
+  PRINTS("\r\n\0");
+  PRINTS("  \0");
   if (fileCount >= 10) {
     char str[3];
     str[0] = '1';
