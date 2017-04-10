@@ -12,6 +12,7 @@ void main() {
     SCANS(command);
     PRINTS("\r\n\0");
     if (str_length(command) == 0) {
+      /* emulate most terms and just show a new line */
       continue;
     }
     if (str_begins(command, "boot")) {
@@ -30,6 +31,7 @@ void main() {
       PRINTS("\r\n\0");
     } else if (str_begins(command, "help")) {
     } else if (str_begins(command, "run")) {
+      interrupt(33, 4, trimFront(command + 3), 4, 0);
     } else if (str_begins(command, "tweet")) {
     } else if (str_begins(command, "type")) {
     } else {
