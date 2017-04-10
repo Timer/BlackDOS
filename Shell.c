@@ -10,6 +10,7 @@ void do_copy(char *, char *);
 
 void main() {
   char command[255];
+  char buffer[13312];
   int i;
   while (1) {
     PRINTS("blackdos ~(__^> \0");
