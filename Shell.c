@@ -192,7 +192,7 @@ void do_copy(char *file1, char *file2) {
     }
     break;
   }
-  interrupt(33, 3, file1, buffer);
+  interrupt(33, 3, file1, buffer, 0);
   interrupt(33, 8, file2, buffer, sectors);
 }
 

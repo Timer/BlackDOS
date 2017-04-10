@@ -221,7 +221,9 @@ void readFile(char *fileName, char *buffer, int *size) {
       fileSize = fileSize + 1;
     }
     /* send back size */
-    *size = fileSize;
+    if (size != 0) {
+      *size = fileSize;
+    }
     break;
   }
 
