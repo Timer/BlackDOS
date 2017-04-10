@@ -31,6 +31,10 @@ void main() {
       trimmed = trimFront(command + 4);
       to_filename(trimmed, file1);
       to_filename(trimFront(str_term_next(trimmed)), file2);
+      if (isUpper(file1) || isUpper(file2)) {
+        interrupt(33, 15, 1, 0, 0);
+        break;
+      }
       PRINTS(file1);
       PRINTS(file2);
       // TODO: copy
