@@ -38,7 +38,12 @@ void main() {
       }
       do_copy(file1, file2);
     } else if (str_begins(command, "del")) {
-      // TODO: del
+      char *file = trimFront(command + 3);
+      if (isUpper(file)) {
+        interrupt(33, 15, 1, 0, 0);
+        break;
+      }
+      interrupt(33, 7, file, 0, 0);
     } else if (str_begins(command, "dir")) {
       // TODO: dir
     } else if (str_begins(command, "echo")) {
@@ -52,7 +57,9 @@ void main() {
     } else if (str_begins(command, "tweet")) {
       // TODO: tweet
     } else if (str_begins(command, "type")) {
-      // TODO: type
+      interrupt(33, 3, trimFront(command + 4), buffer, 0);
+      PRINTS(buffer);
+      PRINTS("\r\n\0");
     } else {
       PRINTS("Unknown command. Type `help` for help.\r\n\0");
     }
