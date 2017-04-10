@@ -13,7 +13,7 @@ Testing:
 6. `echo text` should echo front-trimmed text
 7. `help` shows this manual
 8. `run program` runs a program, try `kitty`, `fib`, or `cal`.
-9. `tweet file` prompts for a tweet to store in `file`.
+9. `tweet file` prompts for a tweet to store in `file`. Verify with `type file`.
 10. `type file` reads the file contents and shows them on screen, try `type msg`.
 11. Hitting enter with no command does nothing but a new line.
 12. Unknown commands should suggest you use `help`.

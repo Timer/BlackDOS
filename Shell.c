@@ -39,6 +39,11 @@ void main() {
         break;
       }
       do_copy(file1, file2);
+      PRINTS("Copied \0");
+      PRINTS(file1);
+      PRINTS(" to \0");
+      PRINTS(file2);
+      PRINTS(".\r\n\0");
     } else if (str_begins(command, "del")) {
       char *file = trimFront(command + 3);
       if (isUpper(file)) {
