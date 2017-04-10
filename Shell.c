@@ -63,11 +63,13 @@ void main() {
       PRINTS("7. `help` shows this manual\r\n\0");
       PRINTS("8. `run program` runs a program, try `kitty`, `fib`, or "
              "`cal`.\r\n\0");
-      PRINTS("9. `tweet file` prompts for a tweet to store in `file`.\r\n\0");
+      PRINTS("9. `tweet file` prompts for a tweet to store in `file`. Verify "
+             "with `type file`.\r\n\0");
       PRINTS("10. `type file` reads the file contents and shows them on "
              "screen, try `type msg`.\r\n\0");
       PRINTS("11. Hitting enter with no command does nothing but a new "
              "line.\r\n\0");
+      PRINTS("\r\n\0");
     } else if (str_begins(command, "run")) {
       interrupt(33, 4, trimFront(command + 3), 4, 0);
     } else if (str_begins(command, "tweet")) {
