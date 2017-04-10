@@ -9,7 +9,9 @@ void main() {
     PRINTS("blackdos ~(__^> \0");
     SCANS(command);
     PRINTS("\r\n\0");
-
+    if (str_length(command) == 0) {
+      continue;
+    }
     if (str_begins(command, "boot")) {
     } else if (str_begins(command, "cls")) {
     } else if (str_begins(command, "copy")) {
