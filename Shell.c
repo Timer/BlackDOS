@@ -6,6 +6,7 @@ char *str_term_next(char *);
 int str_length(char *);
 int str_begins(char *, char *);
 char *trimFront(char *);
+void do_copy(char *, char *);
 
 void main() {
   char command[255];
@@ -35,9 +36,7 @@ void main() {
         interrupt(33, 15, 1, 0, 0);
         break;
       }
-      PRINTS(file1);
-      PRINTS(file2);
-      // TODO: copy
+      do_copy(file1, file2);
     } else if (str_begins(command, "del")) {
       // TODO: del
     } else if (str_begins(command, "dir")) {
@@ -131,7 +130,7 @@ int matchFile(char *file1, char *file2) {
   return 1;
 }
 
-void copyFile(char *file1, char *file2) {
+void do_copy(char *file1, char *file2) {
   char buffer[13312];
   char directory[512];
   int i, j, k;
